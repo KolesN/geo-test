@@ -12,6 +12,7 @@ const readFile = async (filename) => {
   return await fs.readFile(path.resolve(__dirname, `${filename}`), { encoding: 'utf8' })
     .then(( data ) => JSON.parse(data))
     .catch(err => console.log(err))
+
 }
 
 const writeFile = async (filename, text) => {
@@ -64,7 +65,7 @@ app.post('/users/:id', async (req, res) => {
       const updatedUser = { ...rec, currentAreas, prevAreas}
       return [...acc, updatedUser]
     }
-    
+
     return [...acc, rec]
   }, [])
 
@@ -77,7 +78,7 @@ app.post('/users/:id', async (req, res) => {
 
 
 //Initializing users current areas
-app.get('/setAreas', async (req, res) => {
+app.get('/init', async (req, res) => {
   const users = await readFile('users.json')
   const areas = await readFile('areas.json')
 
