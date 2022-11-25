@@ -30,6 +30,13 @@ const getPoint = (scale, xAxis = 0, yAxis = 0) => {
   return [axisPoint(xAxis), axisPoint(yAxis)]
 }
 
+const errorHandler = (err) => {
+  if (err) {
+    console.log(err)
+  }
+  console.log('Success')
+}
+
 // This function is for random areas generation
 
 const geoAreas =  Array(13).fill({}).map((item, index) => {
@@ -53,5 +60,5 @@ const geoUsers = Array(10).fill({}).map((item, index) => {
 })
 
 
-fs.writeFile('./areas.json', JSON.stringify([...geoAreas, mainArea]), (err) => { console.log(err) })
-fs.writeFile('./users.json', JSON.stringify([...geoUsers, staticUser]), (err) => { console.log(err) })
+fs.writeFile('./areas.json', JSON.stringify([...geoAreas, mainArea]), errorHandler)
+fs.writeFile('./users.json', JSON.stringify([staticUser, ...geoUsers]), errorHandler)

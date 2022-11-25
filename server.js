@@ -62,10 +62,9 @@ app.post('/users/:id', async (req, res) => {
       .map(({ name }) => name)
 
       const updatedUser = { ...rec, currentAreas, prevAreas}
-      console.log(currentAreas)
-      console.log(prevAreas)
       return [...acc, updatedUser]
     }
+    
     return [...acc, rec]
   }, [])
 
