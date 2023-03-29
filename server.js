@@ -1,35 +1,25 @@
-const express = require('express')
-const fs = require('fs').promises
-const path = require('path')
-const turf = require('@turf/turf')
-const mysql = require('mysql2')
+import express from 'express'
+
+import * as turf from '@turf/turf'
+
+import { readFile, writeFile } from './controller/filesController.js'
+import { getAll } from './controller/db.js'
 
 const port = process.env.PORT || 8090
 const app = express()
 
-const connection = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'shop'
-}).promise()
+// const connection = mysql.createPool({
+//   host: 'localhost',
+//   user: 'root',
+//   password: '',
+//   database: 'shop'
+// }).promise()
 
 const checkPoint = (userLocation, area) => turf.booleanPointInPolygon(userLocation, area)
 
-const readFile = async (filename) => {
-  return await fs.readFile(path.resolve(__dirname, `${filename}`), { encoding: 'utf8' })
-    .then(( data ) => JSON.parse(data))
-    .catch(err => console.log(err))
-
-}
-
-const writeFile = async (filename, text) => {
-  return await fs.writeFile(path.resolve(__dirname, `${filename}`), text, { encoding: 'utf8' })
-  .catch(err => console.log(err))
-}
-
-
 const table = 'product'
+
+const query = await getAll()
 
 app.use(express.json())
 
@@ -39,24 +29,8 @@ app.use(express.json())
 //   }
 // })
 
-app.patch('/table', async (req, res) => {
-  connection.query('SELECT * FROM ??', table, async (err, result) => {
-    if (err) {
-      console.log('Error occured:', err)
-    }
-
-    await writeFile('data.json', JSON.stringify(result))
-  })
-
-  res.json({
-    message: 'Patched'
-  })
-})
-
 app.get('/table', async (req, res) => {
-  const data = await readFile('data.json')
-
-  res.json(data)
+  res.json(query)
 })
 
 app.post('/table/:id', async (req, res) => {
